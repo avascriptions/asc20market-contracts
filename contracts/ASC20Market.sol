@@ -25,9 +25,10 @@ contract ASC20Market is
     /// @dev Suggested gas stipend for contract receiving ETH that disallows any storage writes.
     uint256 internal constant _GAS_STIPEND_NO_STORAGE_WRITES = 2300;
 
-    mapping(address => uint256) public userNonces;
+    mapping(address => uint256) public userNonces; // unused
     mapping(bytes32 => bool) private cancelledOrFilled;
     address private trustedVerifier;
+    bool private allowCancelAll; // unused
     bool private allowBatch;
 
     function initialize() public initializer {
@@ -197,7 +198,6 @@ contract ASC20Market is
         // Pay eths
         _transferEths(order);
 
-        // Pay ASC-20 tokens
         emit avascriptions_protocol_TransferASC20TokenForListing(order.seller, recipient, order.listId);
 
         emit ASC20OrderExecuted(
@@ -258,7 +258,9 @@ contract ASC20Market is
 
     function _verify(bytes32 orderHash, address signer, uint8 v, bytes32 r, bytes32 s, bytes32 domainSeparator) internal pure returns (bool) {
         require(v == 27 || v == 28, "Invalid v parameter");
+        // is need Bulk?
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, orderHash));
+
         address recoveredSigner = ecrecover(digest, v, r, s);
         if (recoveredSigner == address(0)) {
             return false;
