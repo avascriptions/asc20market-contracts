@@ -197,6 +197,7 @@ contract ASC20Market is
         // Pay eths
         _transferEths(order);
 
+        // Pay ASC-20 tokens
         emit avascriptions_protocol_TransferASC20TokenForListing(order.seller, recipient, order.listId);
 
         emit ASC20OrderExecuted(
@@ -257,9 +258,7 @@ contract ASC20Market is
 
     function _verify(bytes32 orderHash, address signer, uint8 v, bytes32 r, bytes32 s, bytes32 domainSeparator) internal pure returns (bool) {
         require(v == 27 || v == 28, "Invalid v parameter");
-        // is need Bulk?
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, orderHash));
-
         address recoveredSigner = ecrecover(digest, v, r, s);
         if (recoveredSigner == address(0)) {
             return false;
