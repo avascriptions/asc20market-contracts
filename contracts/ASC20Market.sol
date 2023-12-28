@@ -134,8 +134,8 @@ contract ASC20Market is
     }
 
     /**
-     * @notice Verify the validity of the ethscription order
-     * @param order maker ethscription order
+     * @notice Verify the validity of the asc20 token order
+     * @param order maker asc20 token order
      */
     function _verifyOrderHash(ASC20Order calldata order, bool verifySeller) internal view returns (bytes32) {
 
@@ -152,13 +152,12 @@ contract ASC20Market is
 
         _verifyOrder(order, verifySeller);
 
-
         return verifyHash;
     }
 
      /**
-     * @notice Verify the validity of the ethscription order
-     * @param order maker ethscription order
+     * @notice Verify the validity of the asc20 token order
+     * @param order maker asc20 token order
      */
     function _verifyOrder(ASC20Order calldata order, bool verifySeller) internal view  {
         // Verify the validity of the signature

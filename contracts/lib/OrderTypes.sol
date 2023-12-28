@@ -2,8 +2,8 @@
 pragma solidity ^0.8.17;
 
 struct ASC20Order {
-    address seller; // signer of the ethscription seller
-    address creator; // deployer of the ethscription collection
+    address seller; // signer of the asc20 token seller
+    address creator; // deployer of the asc20 token collection
     bytes32 listId;
     string ticker; 
     uint256 amount;
@@ -12,7 +12,7 @@ struct ASC20Order {
     uint64 listingTime; // startTime in timestamp
     uint64 expirationTime; // endTime in timestamp
     uint16 creatorFeeRate;
-    uint32 salt; // 9位数字
+    uint32 salt; // 9-digit
     bytes extraParams; // additional parameters
     uint8 v; // v: parameter (27 or 28)
     bytes32 r; // r: parameter
