@@ -72,10 +72,6 @@ contract ASC20Market is
         uint256 userBalance = msg.value;
         for (uint i=0; i<orders.length; i++) {
             ASC20Order calldata order = orders[i];
-            // Verify the signer is not address(0)
-            if (order.seller == address(0)) {
-                revert SignerInvalid();
-            }
 
             // Verify whether order availability
             bytes32 verifyHash = keccak256(abi.encodePacked(order.seller, order.listId));
@@ -103,7 +99,9 @@ contract ASC20Market is
         }
 
         // refund balance
-        _transferETHWithGasLimit(msg.sender, userBalance, _GAS_STIPEND_NO_STORAGE_WRITES);
+        if (userBalance > 0) {
+            _transferETHWithGasLimit(msg.sender, userBalance, _GAS_STIPEND_NO_STORAGE_WRITES);
+        }
     }
 
     function executeOrder(ASC20Order calldata order, address recipient) public payable override nonReentrant whenNotPaused {
@@ -139,10 +137,7 @@ contract ASC20Market is
      */
     function _verifyOrderHash(ASC20Order calldata order, bool verifySeller) internal view returns (bytes32) {
 
-        // Verify the signer is not address(0)
-        if (order.seller == address(0)) {
-            revert SignerInvalid();
-        }
+
 
         // Verify whether order availability
         bytes32 verifyHash = keccak256(abi.encodePacked(order.seller, order.listId));
@@ -152,6 +147,7 @@ contract ASC20Market is
 
         _verifyOrder(order, verifySeller);
 
+
         return verifyHash;
     }
 
@@ -160,6 +156,10 @@ contract ASC20Market is
      * @param order maker asc20 token order
      */
     function _verifyOrder(ASC20Order calldata order, bool verifySeller) internal view  {
+        // Verify the signer is not address(0)
+        if (order.seller == address(0)) {
+            revert SignerInvalid();
+        }
         // Verify the validity of the signature
         bytes32 orderHash = order.hash();
         address singer = verifySeller ? order.seller : trustedVerifier;
